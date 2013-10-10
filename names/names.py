@@ -6,7 +6,9 @@ import networkx as nx
 import random
 import re
 import string
-import datetime    
+import datetime
+import argparse
+
     
 class Person:
     def __init__(self):  
@@ -18,7 +20,7 @@ class Person:
     
     def __str__(self):
         return "==Person==\nFirst name: "+self.firstname+"\nLast Name: "+self.lastname+"\nBirth date: "+str(self.birth_date)+"\nEmail: "+self.email+"\n-Address\n"+str(self.address)
-                    
+    
     
 class Address:
     global streets
@@ -145,6 +147,32 @@ def address():
 
     
 if __name__ == "__main__":
-    print str(Person())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--firstname", help="returns a first name",
+                    action="store_true")
+    parser.add_argument("--lastname", help="returns a last name",
+                    action="store_true")
+    parser.add_argument("--email", help="returns an email",
+                    action="store_true")
+    parser.add_argument("--birthdate", help="returns a birth date",
+                    action="store_true")
+    parser.add_argument("--address", help="returns an address",
+                    action="store_true")
+
+    p=Person()    
+    args = parser.parse_args()
+    if args.firstname:
+        print p.firstname
+    if args.lastname:
+        print p.lastname 
+    if args.email:
+        print p.email
+    if args.birthdate:
+        print p.birth_date 
+    if args.address:
+        print p.address
+        
+    if len(vars(args))==0:
+        print str(Person())
 
     
