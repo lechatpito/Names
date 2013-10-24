@@ -7,9 +7,8 @@ import random
 import re
 import string
 import datetime
-import argparse
+import math
 
-    
 class Person:
     def __init__(self):  
         self.firstname=first_name()
@@ -19,8 +18,8 @@ class Person:
         self.email=email(self.firstname,self.lastname)
     
     def __str__(self):
-        return "==Person==\nFirst name: "+self.firstname+"\nLast Name: "+self.lastname+"\nBirth date: "+str(self.birth_date)+"\nEmail: "+self.email+"\n-Address\n"+str(self.address)
-    
+        return self.firstname+" "+self.lastname+"\n"+str(self.age)+" years old"+"\n"+"email: "+self.email+"Address :\n"+str(self.address)
+                    
     
 class Address:
     global streets
@@ -51,61 +50,36 @@ class Address:
         #   borough='Parliament Island'
     
     def __str__(self):
-        return "Street number: "+self.number+"\nStreet: "+self.street+"\nMunicipality: "+self.city+"\nState: "+self.state
-        
+        return self.number+" "+self.street+"\n"+self.city+", "+self.state
 
-#Names files processing
-#Getting values from the files
-# See files here: 
-f=open('data/census-derived-all-first.txt')
-flines=file.readlines(f)
-fsplitlines=[]
-for line in flines: fsplitlines.append(line.split())
-fsplitlines.reverse()
+##Get a random name weighted by its frequency
+# pmin and pmax are the min and max weights for names.
+# lines is a list of names with weights
+def get_name(pmin,pmax,lines):
+    rand_val=random.random()*pmax
+    lower=0
+    upper=len(lines)-1
+    return binary_search(lower,upper,rand_val,lines)
 
-g=open('data/dist.all.last')
-glines=file.readlines(g)
-gsplitlines=[]
-for line in glines: gsplitlines.append(line.split())
-gsplitlines.reverse()
-
-u=open('data/emails-domains.txt')
-domains=file.readlines(u)
-
-s=open('data/street-names.txt')
-lines=s.readlines()
-streets=[]
-p=re.compile('\w(\w)(.{32})\w{2}\w.{13}\s{1}.*')
-for line in lines:
-    m=p.match(line)
-    if m:  streets.append(m.groups())
-
-t=open('data/cities.txt')
-lines=t.readlines()
-cities=[]
-p=re.compile('(.*);(.*);\d*')
-for line in lines:
-    m=p.match(line)
-    if m:  cities.append(m.groups())
-
-#Get a random name weighted by frequency
-def get_name(pmin,pmax,lines):    
-    n=list(lines)
-    stop=0
-    r=100
-    while r>pmax: r=random.random()*100 #89.996 & 90.483
-    #print '****************'
-    #print r
-    #print '****************'
-    line=n[0]
-    while (stop < 1 and r>pmin): #1.664 & 1.006
-        line=n.pop()
-        stop=float(line[2])>r
-        if stop and len(n)>0:
-            coin=random.choice([0,1])
-            if coin: line=n.pop()    
-    return line[0]
-
+#finds the name corresponding to the value by performing a binary search in the lines tab
+#returns the index of of the line tab corresponding to the value.
+def binary_search(lower,upper,val,lines):
+    med=int((lower+upper)/math.log(lower+upper))
+    if val>=lines[med][2]:
+        if val<float(lines[med+1][2]):
+            name=lines[med][0]
+        else:
+            name=binary_search(med,upper,value,lines)
+    else:
+        if val>float(lines[med-1][2]):
+            name=lines[med][0]
+        else:
+            if val<float(lines[1][2]):
+                name=lines[0][0]
+            else:
+                name=binary_search(lower,med,val,lines)
+    return name
+    
 def first_name():
     return get_name(1.664,89.996,fsplitlines).title()
 
@@ -145,34 +119,39 @@ def email(fn,ln):
 def address():
     return Address()
 
+
+#Names files processing
+#Getting values from the files
+# See files here: 
+f=open('data/census-derived-all-first.txt')
+flines=file.readlines(f)
+fsplitlines=[]
+for line in flines: fsplitlines.append(line.split())
+
+g=open('data/dist.all.last')
+glines=file.readlines(g)
+gsplitlines=[]
+for line in glines: gsplitlines.append(line.split())
+
+u=open('data/emails-domains.txt')
+domains=file.readlines(u)
+
+s=open('data/street-names.txt')
+lines=s.readlines()
+streets=[]
+p=re.compile('\w(\w)(.{32})\w{2}\w.{13}\s{1}.*')
+for line in lines:
+    m=p.match(line)
+    if m:  streets.append(m.groups())
+
+t=open('data/cities.txt')
+lines=t.readlines()
+cities=[]
+p=re.compile('(.*);(.*);\d*')
+for line in lines:
+    m=p.match(line)
+    if m:  cities.append(m.groups())
+
+  
     
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--firstname", help="returns a first name",
-                    action="store_true")
-    parser.add_argument("--lastname", help="returns a last name",
-                    action="store_true")
-    parser.add_argument("--email", help="returns an email",
-                    action="store_true")
-    parser.add_argument("--birthdate", help="returns a birth date",
-                    action="store_true")
-    parser.add_argument("--address", help="returns an address",
-                    action="store_true")
-
-    p=Person()    
-    args = parser.parse_args()
-    if args.firstname:
-        print p.firstname
-    if args.lastname:
-        print p.lastname 
-    if args.email:
-        print p.email
-    if args.birthdate:
-        print p.birth_date 
-    if args.address:
-        print p.address
-        
-    if len(vars(args))==0:
-        print str(Person())
-
     
