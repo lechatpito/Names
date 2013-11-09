@@ -59,25 +59,29 @@ def get_name(pmin,pmax,lines):
     rand_val=random.random()*pmax
     lower=0
     upper=len(lines)-1
-    return binary_search(lower,upper,rand_val,lines)
+    name=binary_search(lower,upper,rand_val,lines)
+    return name
 
 #finds the name corresponding to the value by performing a binary search in the lines tab
 #returns the index of of the line tab corresponding to the value.
 def binary_search(lower,upper,val,lines):
-    med=int((lower+upper)/math.log(lower+upper))
-    if val>=lines[med][2]:
+    #assert(lower+upper>1)
+    med=(lower+upper)/2
+    #print str(lower)+" "+str(med)+" "+str(upper)
+    assert(med<upper)
+    if val>=float(lines[med][2]):
         if val<float(lines[med+1][2]):
             name=lines[med][0]
         else:
-            name=binary_search(med,upper,value,lines)
-    else:
-        if val>float(lines[med-1][2]):
-            name=lines[med][0]
-        else:
-            if val<float(lines[1][2]):
-                name=lines[0][0]
+            if med+1==upper:
+                name=lines[upper][0]
             else:
-                name=binary_search(lower,med,val,lines)
+                name=binary_search(med,upper,val,lines)
+    else:
+        if med-1==lower:            
+            name=lines[lower][0]
+        else:
+            name=binary_search(lower,med,val,lines)    
     return name
     
 def first_name():
@@ -132,6 +136,7 @@ g=open('data/dist.all.last')
 glines=file.readlines(g)
 gsplitlines=[]
 for line in glines: gsplitlines.append(line.split())
+#gsplitlines.reverse()
 
 u=open('data/emails-domains.txt')
 domains=file.readlines(u)
