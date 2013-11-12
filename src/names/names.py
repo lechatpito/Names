@@ -99,7 +99,7 @@ def full_name():
 
 def birth_date():
     now = datetime.datetime.now()
-    return str(random.randrange(30)+1)+"-"+str(random.randrange(12))+"-"+str(now.year-random.randrange(18,101))
+    return str(random.randrange(30)+1)+"-"+str(random.randrange(12)+1)+"-"+str(now.year-random.randrange(18,101))
 
 def email(fn,ln):
     global domains
