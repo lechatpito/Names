@@ -12,5 +12,5 @@ setup(name='names',
       py_modules=['src/names/names'],
       packages=['names'],
       package_dir={'names': 'src/names'},
-      package_data={'names': ['data/*.txt']},
+      package_data={'names': ['data/*']},
      )

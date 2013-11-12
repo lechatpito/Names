@@ -72,8 +72,8 @@ def binary_search(lower,upper,val,lines):
     med=(lower+upper)/2
     #print str(lower)+" "+str(med)+" "+str(upper)
     assert(med<upper)
-    if val>=float(lines[med][2]):
-        if val<float(lines[med+1][2]):
+    if val>=float(lines[med][1]):
+        if val<float(lines[med+1][1]):
             name=lines[med][0]
         else:
             if med+1==upper:
@@ -88,14 +88,14 @@ def binary_search(lower,upper,val,lines):
     return name
     
 def first_name():
-    return get_name(1.664,89.996,fsplitlines).title()
+    return get_name(1.664,89.996,fsplitlines)
 
 def last_name():
-    return get_name(1.006,90.483,gsplitlines).title()
+    return get_name(1.006,90.483,gsplitlines)
 
 def full_name():
     name=get_name(1.664,89.996,fsplitlines),get_name(1.006,90.483,gsplitlines)
-    return string.join(name).title()
+    return string.join(name)
 
 def birth_date():
     now = datetime.datetime.now()
@@ -130,12 +130,12 @@ def address():
 #Names files processing
 #Getting values from the files
 # See files here: 
-f=open(os.path.join(this_dir, "data", "first-names-formatted.txt"))
+f=open(os.path.join(this_dir, "data", "first-names.tsv"))
 flines=file.readlines(f)
 fsplitlines=[]
 for line in flines: fsplitlines.append(line.split())
 
-g=open(os.path.join(this_dir, "data", "family-names-formatted.txt"))
+g=open(os.path.join(this_dir, "data", "family-names.tsv"))
 glines=file.readlines(g)
 gsplitlines=[]
 for line in glines: gsplitlines.append(line.split())
